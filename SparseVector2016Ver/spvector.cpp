@@ -82,7 +82,7 @@ int insert_element(ElementNode * * p_e, int pos, int val)
 {
 	if (*p_e == NULL)
 	{
-		*p_e = (ElementNode *)(malloc(sizeof(ElementNode)));
+		*p_e = new ElementNode;
 
 		if (*p_e == NULL)  //If I malloc and it's STILL NULL, malloc failed, return 1
 		{
@@ -101,7 +101,7 @@ int insert_element(ElementNode * * p_e, int pos, int val)
 		ElementNode * nodeToInsert = NULL;
 		if (val != 0)
 		{
-			nodeToInsert = (ElementNode *)(malloc(sizeof(ElementNode)));
+			nodeToInsert = new ElementNode;
 
 			if (nodeToInsert == NULL)
 			{
@@ -196,11 +196,13 @@ int insert_element(ElementNode * * p_e, int pos, int val)
 						current->next = nodeToInsert;
 					}
 
-					else
-					{
+					
 						current = next;
-						next = next->next;
-					}
+						if (next != NULL)
+						{
+							next = next->next;
+						}
+					
 
 
 				} while (current != NULL);
@@ -219,7 +221,10 @@ int insert_element(ElementNode * * p_e, int pos, int val)
 					}
 
 					current = next;
-					next = next->next;
+					if (next != NULL)
+					{
+						next = next->next;
+					}
 
 
 				} while (next != NULL);
