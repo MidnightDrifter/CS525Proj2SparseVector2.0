@@ -68,184 +68,297 @@ void printf_rows(RowNode  const * p_r, char *fmt, int dim)
 }
 
 
-int  determinant(RowNode  const * p_r, int dim)
-{
-	/* this is a meaningless code to get rid of "unsed argument" warnings in
-	* Borland an MS */
-	int result = 1;
-	if (dim == 0) ++result;
-	if (p_r)    --result;
-	return result;
-}
 
 int insert_element(ElementNode * * p_e, int pos, int val)
 {
-	if (*p_e == NULL)
+	ElementNode * current = *p_e;
+	ElementNode * next = NULL;
+	if(current != NULL)
 	{
-		*p_e = new ElementNode;
-
-		if (*p_e == NULL)  //If I malloc and it's STILL NULL, malloc failed, return 1
-		{
-			return 1;
-		}
-
-		(*p_e)->data = val;
-		(*p_e)->pos = pos;
-		(*p_e)->next = NULL;
-		return 0;
+		next = current->next;
 	}
+
 	else
 	{
-		ElementNode * current = *p_e;
-		ElementNode * next = (*p_e)->next;
-		ElementNode * nodeToInsert = NULL;
 		if (val != 0)
 		{
-			nodeToInsert = new ElementNode;
-
+			ElementNode * nodeToInsert = new ElementNode;
 			if (nodeToInsert == NULL)
 			{
-				return 1;
+				return -1;
 			}
+			nodeToInsert->data = val;
+			nodeToInsert->pos = pos;
+			nodeToInsert->next = NULL;
+			*p_e = nodeToInsert;
+		}
+		return 0;
+	}
+	
+	if (val == 0)
+	{
+		
+		if (current->pos == pos)
+		{
+			*p_e = next;
+			delete(current);
+		}
+		else {
+			do
+			{
+				if (next->pos == pos)
+				{
+					if (next != NULL)
+					{
+						current->next = next->next;
+					}
 
-			else {
-				nodeToInsert->data = val;
-				nodeToInsert->pos = pos;
-				nodeToInsert->next = NULL;
+					else
+					{
+						current->next = NULL;
+					}
 
-			}
+					delete(next);
+					break;
+				}
+
+				current = next;
+				if (next != NULL)
+				{
+					next = next->next;
+				}
+
+			} while (next != NULL);
+		}
+		return 0;
+	}
+
+	else
+	{
+		ElementNode * nodeToInsert = new ElementNode;
+		if(nodeToInsert == NULL)
+		{
+			return -1;
+		}
+		nodeToInsert->data = val;
+		nodeToInsert->pos = pos;
+		nodeToInsert->next = NULL;
+		if (pos < current->pos)
+		{
+			*p_e = nodeToInsert;
+			nodeToInsert->next = current;
+			
 
 		}
 
-		//Check if next==NULL
-		if (next == NULL)
+		else if (pos == current->pos)
 		{
-			if (val != 0)
-			{
-				if (pos < current->pos)  //Node to insert comes before first node in vector, node to insert is new head of vector
-				{
-					nodeToInsert->next = (*p_e);
-					p_e = &nodeToInsert;
-
-
-
-
-				}
-
-				else if (pos == current->pos)  //Simple replacement, don't need to use the new node we created
-				{
-					(*p_e)->data = val;
-
-
-				}
-
-				else  //New node comes after current head of vector
-				{
-					(*p_e)->next = nodeToInsert;
-
-
-				}
-
-
-			}
-
-			else
-			{
-				if (pos = current->pos)
-				{
-					free(*p_e);
-					*p_e = NULL;
-				}
-			}
-			/*
-			current = NULL;
-			free(current);
-			next = NULL;
-			free(next);
-			nodeToInsert = NULL;
-			free(nodeToInsert);  //Double check these lines?
-
-			return 0;
-			*/
+			delete(nodeToInsert);
+			current->data = val;
 		}
-		else
-		{
-			if (val != 0)
+
+		else {
+			do
 			{
-				do
+				if (current->pos < pos && next == NULL)
 				{
-					if (pos < current->pos)  //Similar to above
-					{
-						nodeToInsert->next = (*p_e);
-						p_e = &nodeToInsert;
-					}
-
-					else if (pos == current->pos)
-					{
-						(*p_e)->data = val;
-					}
-
-					else if (next != NULL && pos < next->pos)
+					current->next = nodeToInsert;
+				}
+				if (next != NULL)
+				{
+					if (pos < next->pos)
 					{
 						current->next = nodeToInsert;
 						nodeToInsert->next = next;
+						break;
 					}
 
-					else if (next == NULL)
+					else if (pos == next->pos)
 					{
-						current->next = nodeToInsert;
+						delete(nodeToInsert);
+						next->data = val;
+						break;
 					}
+				}
+				current = next;
+				if(next != NULL)
+				{
+					next = next->next;
+				}
 
-					
-						current = next;
-						if (next != NULL)
-						{
-							next = next->next;
-						}
-					
-
-
-				} while (current != NULL);
-
-			}
-
-			else
-			{
-				free(nodeToInsert);
-				nodeToInsert = NULL;
-				do {
-					if (pos == next->pos)
-					{
-						current->next = next->next;
-						free(next);
-					}
-
-					current = next;
-					if (next != NULL)
-					{
-						next = next->next;
-					}
-
-
-				} while (next != NULL);
-			}
-
-
+			} while (current != NULL);
 		}
-
-		current = NULL;
-
-		next = NULL;
-
-		nodeToInsert = NULL;
-		//Double check these lines?
-
-
-
+		return 0;
 
 	}
 
-	return 0;
+
+	//if (*p_e == NULL)
+	//{
+	//	*p_e = new ElementNode;
+
+	//	if (*p_e == NULL)  //If I malloc and it's STILL NULL, malloc failed, return 1
+	//	{
+	//		return 1;
+	//	}
+
+	//	(*p_e)->data = val;
+	//	(*p_e)->pos = pos;
+	//	(*p_e)->next = NULL;
+	//	return 0;
+	//}
+	//else
+	//{
+	//	ElementNode * current = *p_e;
+	//	ElementNode * next = (*p_e)->next;
+	//	ElementNode * nodeToInsert = NULL;
+	//	if (val != 0)
+	//	{
+	//		nodeToInsert = new ElementNode;
+
+	//		if (nodeToInsert == NULL)
+	//		{
+	//			return 1;
+	//		}
+
+	//		else {
+	//			nodeToInsert->data = val;
+	//			nodeToInsert->pos = pos;
+	//			nodeToInsert->next = NULL;
+
+	//		}
+
+	//	}
+
+	//	//Check if next==NULL
+	//	if (next == NULL)
+	//	{
+	//		if (val != 0)
+	//		{
+	//			if (pos < current->pos)  //Node to insert comes before first node in vector, node to insert is new head of vector
+	//			{
+	//				nodeToInsert->next = (*p_e);
+	//				p_e = &nodeToInsert;
+
+
+
+
+	//			}
+
+	//			else if (pos == current->pos)  //Simple replacement, don't need to use the new node we created
+	//			{
+	//				(*p_e)->data = val;
+
+
+	//			}
+
+	//			else  //New node comes after current head of vector
+	//			{
+	//				(*p_e)->next = nodeToInsert;
+
+
+	//			}
+
+
+	//		}
+
+	//		else
+	//		{
+	//			if (pos = current->pos)
+	//			{
+	//				delete(*p_e);
+	//				*p_e = NULL;
+	//			}
+	//		}
+	//		/*
+	//		current = NULL;
+	//		delete(current);
+	//		next = NULL;
+	//		delete(next);
+	//		nodeToInsert = NULL;
+	//		delete(nodeToInsert);  //Double check these lines?
+
+	//		return 0;
+	//		*/
+	//	}
+	//	else
+	//	{
+	//		if (val != 0)
+	//		{
+	//			do
+	//			{
+	//				if (pos < current->pos)  //Similar to above
+	//				{
+	//					nodeToInsert->next = (*p_e);
+	//					p_e = &nodeToInsert;
+	//				}
+
+	//				else if (pos == current->pos)
+	//				{
+	//					(*p_e)->data = val;
+	//				}
+
+	//				else if (next != NULL && pos < next->pos)
+	//				{
+	//					current->next = nodeToInsert;
+	//					nodeToInsert->next = next;
+	//				}
+
+	//				else if (next == NULL)
+	//				{
+	//					current->next = nodeToInsert;
+	//				}
+
+	//				
+	//					current = next;
+	//					if (next != NULL)
+	//					{
+	//						next = next->next;
+	//					}
+	//				
+
+
+	//			} while (current != NULL);
+
+	//		}
+
+	//		else
+	//		{
+	//			delete(nodeToInsert);
+	//			nodeToInsert = NULL;
+	//			do {
+	//				if (pos == next->pos)
+	//				{
+	//					current->next = next->next;
+	//					delete(next);
+	//				}
+
+	//				current = next;
+	//				if (next != NULL)
+	//				{
+	//					next = next->next;
+	//				}
+
+
+	//			} while (next != NULL);
+	//		}
+
+
+	//	}
+
+	//	current = NULL;
+
+	//	next = NULL;
+
+	//	nodeToInsert = NULL;
+	//	//Double check these lines?
+
+
+
+
+	//}
+
+	//return 0;
 
 }
 
@@ -257,14 +370,14 @@ int insert_element(ElementNode * * p_e, int pos, int val)
 void delete_element(ElementNode * * p_e, int pos)
 {
 
-
+	
 
 	ElementNode * prev = *p_e;
 	ElementNode * current = (prev)->next;
 
 	if (prev->pos == pos)
 	{
-		free(prev);
+		delete(prev);
 		(*p_e) = current;
 	}
 
@@ -277,7 +390,7 @@ void delete_element(ElementNode * * p_e, int pos)
 			/* If we're deleting the head node, delete *p_e and point the head to the next node */
 
 			prev->next = current->next;
-			free(current);
+			delete(current);
 
 		}
 
@@ -468,7 +581,7 @@ void free_elements(ElementNode * p_e)
 
 		while (current != NULL)
 		{
-			free(current);
+			delete(current);
 			current = next;
 			if (next != NULL)
 			{
@@ -529,10 +642,13 @@ void free_rows(RowNode   * p_r)
 }
 
 
-/*
-int  determinant( RowNode  const * p_r, int dim )
-{
-return 1;
-}
-*/
 
+int  determinant(RowNode  const * p_r, int dim)
+{
+	/* this is a meaningless code to get rid of "unsed argument" warnings in
+	* Borland an MS */
+	int result = 1;
+	if (dim == 0) ++result;
+	if (p_r)    --result;
+	return result;
+}
