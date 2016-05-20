@@ -610,30 +610,161 @@ return (insert_element(eh, i, j));
 /*  Row functions */
 
 
-int insert_row(RowNode   * *p_r, int pos, ElementNode * p_e)
+int insert_row(RowNode   **p_r, int pos, ElementNode * p_e)
 {
-	return 1;
+	if (p_e != NULL)
+	{
+		RowNode * current = *p_r;
+		RowNode * next = NULL;
+		if (current != NULL)
+		{
+			next = current->next;
+		}
+
+
+
+
+
+		RowNode * rowToInsert = new RowNode;
+		rowToInsert->pos = pos;
+		rowToInsert->elements = p_e;
+		rowToInsert->next = NULL;
+
+		if (rowToInsert == NULL)
+		{
+			return 1;
+		}
+
+
+		if (*p_r == NULL)
+		{
+			*p_r = rowToInsert;
+		}
+
+
+		else if (next == NULL && pos > current->pos)
+		{
+			current->next = rowToInsert;
+		}
+
+		
+		else
+		{
+				do
+				{
+					if(pos > current->pos && next == NULL)
+					{
+						current->next = rowToInsert;
+					}
+
+					
+					else if (pos == current->pos)
+					{
+						delete(rowToInsert);
+						return 2;
+					}
+
+					else if (pos < next->pos && pos != current->pos)
+					{
+						current->next = rowToInsert;
+						rowToInsert->next = next;
+					}
+
+					else
+					{
+						current = next;
+						if (next != NULL)
+						{
+							next = next->next;
+						}
+					}
+
+				}while (next != NULL);
+
+		}
+	}
+	return 0;
 }
 
 
 int insert_element2(RowNode   * *pp_r, int pos_row, int pos_col, int val)
 {
-	return 1;
+	if (*pp_r != NULL)
+	{
+		RowNode * current = *pp_r;
+		RowNode * next = current->next;
+
+		do
+		{
+			if (pos_row == current->pos)
+			{
+				return(insert_element(&(current->elements), pos_col, val));
+			}
+			else
+			{
+				current = next;
+				if(current!=NULL)
+				{
+					next = next->next;
+				}
+			}
+ 
+		} while (next != NULL && pos_row <= current->pos);
+		
+	}
+	
+	else
+	{
+		ElementNode * nodeToInsert = new ElementNode;
+		nodeToInsert->next = NULL;
+		nodeToInsert->pos = pos_col;
+		nodeToInsert->data = val;
+
+		return (insert_row(pp_r, pos_row, nodeToInsert));
+	}
+		
+	return 0;
 }
 
 
 RowNode   * find_row(RowNode   * *pp_r, int pos)
 {
+	if (*pp_r != NULL)
+	{
+		RowNode * current = *pp_r;
+		RowNode * next = current->next;
+
+		do {
+
+			if(current->pos == pos)
+			{
+				return current;
+			}
+
+			else
+			{
+				current = next;
+				if(current!=NULL)
+				{
+					next = next->next;
+				}
+			}
+
+		} while (next != NULL && current->pos <= pos);
+	}
+
 	return NULL;
 }
 
-RowNode   * transpose(RowNode  const * p_r)
+//RowNode   * transpose(RowNode  const * p_r)
+RowNode * transpose(RowNode const*)
 {
 
 	return NULL;
 }
 
-RowNode   * mult(RowNode  const * p_r1, RowNode  const * p_r2)
+//RowNode   * mult(RowNode  const * p_r1, RowNode  const * p_r2)
+RowNode * mult(RowNode const*, RowNode const*)
 {
 	return NULL;
 }
@@ -642,7 +773,25 @@ RowNode   * mult(RowNode  const * p_r1, RowNode  const * p_r2)
 
 void free_rows(RowNode   * p_r)
 {
+	if (p_r != NULL)
+	{
+		RowNode * current = p_r;
+		RowNode * next = current->next;
 
+		do
+		{
+			free_elements(current->elements);
+			delete(current);
+			current = next;
+			if(next!=NULL)
+			{
+				next = next->next;
+			}
+
+
+		} while (next != NULL);
+
+	}
 
 }
 

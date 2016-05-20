@@ -115,6 +115,9 @@ void print_rows(RowNode const * p_r);
 **/
 int insert_row(RowNode  * *p_r, int pos, ElementNode  * p_e);
 
+
+
+
 /** \brief Inserts a new element at [pos_row][pos_col] in given matrix **pp_r
 *   \param 'RowNode **pp_r' == pointer to the first element of the matrix into which the element is being inserted
 *	\param 'int pos_row' == the row into which to insert the element
