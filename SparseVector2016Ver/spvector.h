@@ -106,23 +106,30 @@ void printf_rows(RowNode const * p_r, char *fmt, int dim);
 * prints all non-zero elements of the list of rows */
 void print_rows(RowNode const * p_r);
 
-/*
-* inserts a list of elements at position pos.
-* If a row at position pos already exists, do not insert, return 2
-* If the list p_e is empty, do nothing (don't insert a NULL pointer into p_r)
-* returns 1 if malloc fails
-* returns 2 if position pos already exists
-* returns 0 otherwise */
+/**
+* \brief Inserts a list of elements at position pos.  If the list p_e is empty, do nothing (don't insert a NULL pointer into p_r)
+* \param 'RowNode **p_r' == a pointer to the first element of the matrix into which the sparsevector is being inserted
+* \param 'int pos' == the position to insert the row into
+* \param 'ElementNode *p_e' == a pointer to the head of the sparsevector to insert--if this is empty, do nothing (don't insert NULL pointer into p_r)
+* \return  2 if row already exists at given position, 1 if malloc/new fails, 0 otherwise 
+**/
 int insert_row(RowNode  * *p_r, int pos, ElementNode  * p_e);
 
-/* inserts a new element at pos_col
-* in the row corresponding to position pos_row
-* (pos_row'th row, pos_col'th column)
-* uses the same rules as insert_element */
+/** \brief Inserts a new element at [pos_row][pos_col] in given matrix **pp_r
+*   \param 'RowNode **pp_r' == pointer to the first element of the matrix into which the element is being inserted
+*	\param 'int pos_row' == the row into which to insert the element
+*   \param 'int pos_col' == the column into which to insert the element
+*   \param 'int val' == the value to insert  (follows same rules as insert_element)
+*   \return 1 if new/malloc fails, 0 otherwise
+* uses the same rules as insert_element 
+**/
 int insert_element2(RowNode  * *pp_r, int pos_row, int pos_col, int val);
 
-/* returns a pointer to a row at position pos if it exists,
-* NULL otherwise */
+/** \brief  Returns a pointer to a row at position pos if it exists
+*	\param  RowNode **pp_r == pointer to the first element of the matrix
+*	\param  int pos == the row to look up
+*   \return   RowNode * to the specified row if it exists, NULL otherwise
+**/
 RowNode  * find_row(RowNode  * *pp_r, int pos);
 
 /* transposes a list of rows:
@@ -137,7 +144,14 @@ RowNode  * find_row(RowNode  * *pp_r, int pos);
 * [ 3 0 6 ]     [ 4 5 6 ]
 * for full credit the transposed matrix should contain only 2
 * rows (positions 0 and 2)
-* Returns a new list of rows. Input list p_r should not be modified.*/
+* Returns a new list of rows. Input list p_r should not be modified.
+*/
+
+/**
+*  \brief  Transposes a matrix, deleting / skipping any new rows of all 0's
+*  \param   RowNode const* p_r == the pointer to the matrix to be transposed
+*  \return  Pointer to the new, transposed matrix
+**/
 RowNode  * transpose(RowNode const * p_r);
 
 /* multiply two lists of RowNodes as matricies.
@@ -146,16 +160,37 @@ RowNode  * transpose(RowNode const * p_r);
 * 2) Now [i,j]'th element of the product matrix
 * is the scalar product of i'th row of the first
 * and the j'th row of the transposed.
-* Returns a new list of rows. Input lists p_r1, p_r2 should not be modified. */
+* Returns a new list of rows. Input lists p_r1, p_r2 should not be modified. 
+*/
+
+/**
+*  \brief  Multiply two matrices together
+*  \param RowNode const* p_r1 == the pointer to the first matrix
+*  \param RowNode const* p_r2 == the pointer to the second matrix
+*  \return  Pointer to a matrix containing the product of the two matrices
+**/
 RowNode  * mult(RowNode const * p_r1, RowNode const * p_r2);
 
-/*
-* deallocate a list of RowNodes */
+/**
+* \brief  Deallocate a matrix
+* \param RowNode* p_r == pointer to the matrix to deallocate
+* \return N/A
+**/
 void free_rows(RowNode  * p_r);
 
 /*
 * Calculates the determinant of the list of RowNodes viewed as a matrix.
 * Dimension is required!
-* extra credit, discuss algorithm with me first */
+* extra credit, discuss algorithm with me first 
+
+*SH- It's some sort of recursion iirc?
+*/
+
+/**
+* \brief  Calculate & return the determinant of a matrix--requires dimension of matrix
+* \param  RowNode const* p_r == pointer to the matrix to find the determinant of
+* \param dim = dimension of the matrix
+* \return The determinant of the matrix
+**/
 int  determinant(RowNode const * p_r, int dim);
 #endif

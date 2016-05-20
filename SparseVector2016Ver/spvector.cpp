@@ -364,56 +364,59 @@ int insert_element(ElementNode * * p_e, int pos, int val)
 
 
 
-
-
-
-void delete_element(ElementNode * * p_e, int pos)
+void delete_element(ElementNode ** p_e, int pos)
 {
-
-	
-
-	ElementNode * prev = *p_e;
-	ElementNode * current = (prev)->next;
-
-	if (prev->pos == pos)
-	{
-		delete(prev);
-		(*p_e) = current;
-	}
-
-
-	do
-	{
-
-		if (current->pos == pos)
-		{
-			/* If we're deleting the head node, delete *p_e and point the head to the next node */
-
-			prev->next = current->next;
-			delete(current);
-
-		}
-
-		else if (current->pos > pos)
-		{
-			current = NULL;
-			/* No position corresponding to input, nothing to delete. */
-		}
-
-		else
-		{
-
-			prev = current;
-			if (current != NULL)
-			{
-				current = current->next;
-			}
-		}
-
-	} while (current != NULL);
-
-
+	insert_element(p_e, pos, 0);
 }
+
+//
+//void delete_element(ElementNode * * p_e, int pos)
+//{
+//
+//	
+//
+//	ElementNode * prev = *p_e;
+//	ElementNode * current = (prev)->next;
+//
+//	if (prev->pos == pos)
+//	{
+//		delete(prev);
+//		(*p_e) = current;
+//	}
+//
+//
+//	do
+//	{
+//
+//		if (current->pos == pos)
+//		{
+//			/* If we're deleting the head node, delete *p_e and point the head to the next node */
+//
+//			prev->next = current->next;
+//			delete(current);
+//
+//		}
+//
+//		else if (current->pos > pos)
+//		{
+//			current = NULL;
+//			/* No position corresponding to input, nothing to delete. */
+//		}
+//
+//		else
+//		{
+//
+//			prev = current;
+//			if (current != NULL)
+//			{
+//				current = current->next;
+//			}
+//		}
+//
+//	} while (current != NULL);
+//
+//
+//}
 
 int get(ElementNode const * p_e, int pos)
 {
@@ -524,10 +527,12 @@ ElementNode * add(ElementNode const * p_e1, ElementNode const * p_e2)
 
 	if (holder != 0)
 	{
+		/*
 		if (temp == NULL)
 		{
 			temp = 0;
 		}
+		*/
 		insert_element(&temp, i, holder);
 	}
 
